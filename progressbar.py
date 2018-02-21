@@ -19,7 +19,7 @@ class ProgressBar():
         self.ratio = float(self.level - self.start) / \
             float(self.end - self.start)
         self.level_string = int(self.ratio * self.bar_length)
-    def drawProgress(self): # level이 설정된 만큼 그림을 그리는 함수
+    def drawProgress(self): 
         sys.stdout.write("\r  %3i%% [%s%s]" % (
             int(self.ratio * 100.0),
             '#' * int(self.level_string),
