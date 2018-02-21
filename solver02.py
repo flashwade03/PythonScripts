@@ -135,7 +135,7 @@ def find_path(mode) :
             tile_map[ball['y']][ball['x']] = ball['type']
             visited_map[ball['y']][ball['x']] = 1
             ball['direction'] = DIRECTION.NONE
-            ball['ignore_magnetic'] = False
+            ball['ignore_magnetic'] = True
             ball['is_moved'] = False
          
         PB = progress_bar(100)
@@ -171,6 +171,7 @@ def DFS(ball_data, visited_map, path):
     #print 'map'
     #for row in tile_map:
     #    print row
+    #print '\n'
     #print 'visited'
     #for row in visited_map:
     #    print row
@@ -200,7 +201,6 @@ def DFS(ball_data, visited_map, path):
         is_move = 0
         for ball in temp_ball_data:
             if is_possible_move(ball, temp_ball_data, temp_visited_map):
-        #        print 'is possible move'
                 ball = move_ball(ball)
                 temp_visited_map[ball['y']][ball['x']] = 1
                 if tile_map[ball['y']][ball['x']] != TILETYPE.MAGNETIC:
@@ -251,18 +251,22 @@ def DFS(ball_data, visited_map, path):
 
     for ball in temp_ball_data:
         if tile_map[ball['y']][ball['x']] != TILETYPE.MAGNETIC:
-            if ball['y']-1 >= 0 and tile_map[ball['y']-1][ball['x']] == TILETYPE.MAGNETIC:
+            if ball['y']-1 >= 0 and tile_map[ball['y']-1][ball['x']] == TILETYPE.MAGNETIC and ball['ignore_magnetic'] == False:
                 ball['y'] = ball['y'] -1
                 ball['direction'] = DIRECTION.NONE
-            elif ball['y']+1 <= map_height - 1 and tile_map[ball['y']+1][ball['x']] == TILETYPE.MAGNETIC:
+                ball['ignore_magnetic'] = True
+            elif ball['y']+1 <= map_height - 1 and tile_map[ball['y']+1][ball['x']] == TILETYPE.MAGNETIC and ball['ignore_magnetic'] == False:
                 ball['y'] = ball['y']+1
                 ball['direction'] = DIRECTION.NONE
-            elif ball['x'] -1 >=0 and tile_map[ball['y']][ball['x']-1] == TILETYPE.MAGNETIC:
+                ball['ignore_magnetic'] = True
+            elif ball['x'] -1 >=0 and tile_map[ball['y']][ball['x']-1] == TILETYPE.MAGNETIC and ball['ignore_magnetic'] == False:
                 ball['x'] = ball['x']-1
                 ball['direction'] = DIRECTION.NONE
-            elif ball['x'] + 1 <= map_width -1 and tile_map[ball['y']][ball['x']+1] == TILETYPE.MAGNETIC:
+                ball['ignore_magnetic'] = True
+            elif ball['x'] + 1 <= map_width -1 and tile_map[ball['y']][ball['x']+1] == TILETYPE.MAGNETIC and ball['ignore_magnetic'] == False:
                 ball['x'] = ball['x']+1
                 ball['direction'] = DIRECTION.NONE
+                ball['igrore_magnetic'] = True
 
     #for row in temp_visited_map:
     #    print row
@@ -388,147 +392,6 @@ def DFS(ball_data, visited_map, path):
         current_UNIT = 0
     PB.set_progress(progress)
 
-def check_duplicate_ball(y, x, ball, visited_map):
-    if ball['y'] == y and ball['x'] == x:
-        if ball['is_moved'] == True:
-            return False
-        else :
-            if ball['direction'] == DIRECTION.UP:
-                if ball['type'] == 0:
-                    if ball['y'] - 1 >= 0:
-                        current_type = tile_map[ball['y']][ball['x']]
-                        next_type = tile_map[ball['y']-1][ball['x']]
-                        if current_type == TILETYPE.HORIZONTAL:
-                            return False
-                        elif next_type == TILETYPE.BLOCK or next_type == TILETYPE.HORIZONTAL or next_type == TILETYPE.FLIP :
-                            return False
-                        elif (next_type == TILETYPE.NORMAL or next_type == TILETYPE.VERTICAL) and visited_map[ball['y']-1][ball['x'] ] == 0:
-                            return True
-                        elif next_type == TILETYPE.RIGHT or next_type == TILETYPE.LEFT or next_type == TILETYPE.UP or next_type == TILETYPE.DOWN:
-                            for b in ball_data:
-                                if ball['x'] != b['x'] or ball['y'] != b['y']:
-                                
-                                    return True
-                        elif next_type == TILETYPE.WARP or next_type == TILETYPE.MAGNETIC:
-                            return True
-
-                elif ball['type'] == 1:
-                    if ball['y'] + 1 <= map_height-1 : 
-                        current_type = tile_map[ball['y']][ball['x']]
-                        next_type = tile_map[ball['y']+1][ball['x']]
-                        if current_type == TILETYPE.HORIZONTAL:
-                            return False
-                        elif next_type == TILETYPE.BLOCK or next_type == TILETYPE.HORIZONTAL or next_type == TILETYPE.FLIP :
-                            return False
-                        elif (next_type == TILETYPE.NORMAL or next_type == TILETYPE.VERTICAL) and visited_map[ball['y']+1][ball['x'] ] == 0:
-                            return True
-                        elif next_type == TILETYPE.RIGHT or next_type == TILETYPE.LEFT or next_type == TILETYPE.UP or next_type == TILETYPE.DOWN:
-                            return True
-                        elif next_type == TILETYPE.WARP or next_type == TILETYPE.MAGNETIC:
-                            return True
-
-            elif ball['direction'] == DIRECTION.DOWN:
-                if ball['type'] == 0:
-                    if ball['y'] + 1 <= map_height-1 : 
-                        current_type = tile_map[ball['y']][ball['x']]
-                        next_type = tile_map[ball['y']+1][ball['x']]
-                        if current_type == TILETYPE.HORIZONTAL:
-                            return False
-                        elif next_type == TILETYPE.BLOCK or next_type == TILETYPE.HORIZONTAL or next_type == TILETYPE.FLIP :
-                            return False
-                        elif (next_type == TILETYPE.NORMAL or next_type == TILETYPE.VERTICAL) and visited_map[ball['y']+1][ball['x'] ] == 0:
-                            return True
-                        elif next_type == TILETYPE.RIGHT or next_type == TILETYPE.LEFT or next_type == TILETYPE.UP or next_type == TILETYPE.DOWN:
-                            return True
-                        elif next_type == TILETYPE.WARP or next_type == TILETYPE.MAGNETIC:
-                            return True
-
-                elif ball['type'] == 1:
-                    if ball['y'] - 1 >= 0:
-                        current_type = tile_map[ball['y']][ball['x']]
-                        next_type = tile_map[ball['y']-1][ball['x']]
-                        if current_type == TILETYPE.HORIZONTAL:
-                            return False
-                        elif next_type == TILETYPE.BLOCK or next_type == TILETYPE.HORIZONTAL or next_type == TILETYPE.FLIP :
-                            return False
-                        elif (next_type == TILETYPE.NORMAL or next_type == TILETYPE.VERTICAL) and visited_map[ball['y']-1][ball['x'] ] == 0:
-                            return True
-                        elif next_type == TILETYPE.RIGHT or next_type == TILETYPE.LEFT or next_type == TILETYPE.UP or next_type == TILETYPE.DOWN:
-                            return True
-                        elif next_type == TILETYPE.WARP or next_type == TILETYPE.MAGNETIC:
-                            return True
-
-
-            elif ball['direction'] == DIRECTION.RIGHT:
-                if ball['type'] == 0:
-                    if ball['x'] + 1 <= map_width - 1:
-                        current_type = tile_map[ball['y']][ball['x']]
-                        next_type = tile_map[ball['y']][ball['x'] + 1]
-                        if current_type == TILETYPE.VERTICAL:
-                            return False
-                        elif next_type == TILETYPE.BLOCK or next_type == TILETYPE.VERTICAL or next_type == TILETYPE.FLIP:
-                            return False
-                        elif (next_type == TILETYPE.NORMAL or next_type == TILETYPE.HORIZONTAL) and visited_map[ball['y']][ball['x'] + 1] == 0:
-                            return True
-                        elif next_type == TILETYPE.RIGHT or next_type == TILETYPE.LEFT or next_type == TILETYPE.UP or next_type == TILETYPE.DOWN:
-                            return True
-                        elif next_type == TILETYPE.WARP or next_type == TILETYPE.MAGNETIC:
-                            return True
-
-                elif ball['type'] == 1:
-                    if ball['x'] - 1 >= 0:
-                        current_type = tile_map[ball['y']][ball['x']]
-                        next_type = tile_map[ball['y']][ball['x'] - 1]
-                        if current_type == TILETYPE.VERTICAL:
-                            return False
-                        elif next_type == TILETYPE.BLOCK or next_type == TILETYPE.VERTICAL or next_type == TILETYPE.FLIP:
-                            return False
-                        elif (next_type == TILETYPE.NORMAL or next_type == TILETYPE.HORIZONTAL) and visited_map[ball['y']][ball['x'] - 1] == 0:
-                            return True
-                        elif next_type == TILETYPE.RIGHT or next_type == TILETYPE.LEFT or next_type == TILETYPE.UP or next_type == TILETYPE.DOWN:
-                            return True
-                        elif next_type == TILETYPE.WARP or next_type == TILETYPE.MAGNETIC:
-                            return True
-
-
-            elif ball['direction'] == DIRECTION.LEFT:
-                if ball['type'] == 0:
-                    if ball['x'] - 1 >= 0:
-                        current_type = tile_map[ball['y']][ball['x']]
-                        next_type = tile_map[ball['y']][ball['x'] - 1]
-                        if current_type == TILETYPE.VERTICAL:
-                            return False
-                        elif next_type == TILETYPE.BLOCK or next_type == TILETYPE.VERTICAL or next_type == TILETYPE.FLIP:
-                            return False
-                        elif (next_type == TILETYPE.NORMAL or next_type == TILETYPE.HORIZONTAL) and visited_map[ball['y']][ball['x'] - 1] == 0:
-                            return True
-                        elif next_type == TILETYPE.RIGHT or next_type == TILETYPE.LEFT or next_type == TILETYPE.UP or next_type == TILETYPE.DOWN:
-                            return True
-                        elif next_type == TILETYPE.WARP or next_type == TILETYPE.MAGNETIC:
-                            return True
-
-                elif ball['type'] == 1:
-                    if ball['x'] + 1 <= map_width - 1:
-                        current_type = tile_map[ball['y']][ball['x']]
-                        next_type = tile_map[ball['y']][ball['x'] + 1]
-                        if current_type == TILETYPE.VERTICAL:
-                            return False
-                        elif next_type == TILETYPE.BLOCK or next_type == TILETYPE.VERTICAL or next_type == TILETYPE.FLIP:
-                            return False
-                        elif (next_type == TILETYPE.NORMAL or next_type == TILETYPE.HORIZONTAL) and visited_map[ball['y']][ball['x'] + 1] == 0:
-                            return True
-                        elif next_type == TILETYPE.RIGHT or next_type == TILETYPE.LEFT or next_type == TILETYPE.UP or next_type == TILETYPE.DOWN:
-                            return True
-                        elif next_type == TILETYPE.WARP or next_type == TILETYPE.MAGNETIC:
-                            return True
-
-
-            elif ball['direction'] == DIRECTION.NONE:
-                return False
-    else:
-        return True
-
-    return False
 
 def is_possible_move(ball, ball_data, visited_map):
     if ball['direction'] == DIRECTION.UP :
