@@ -730,21 +730,41 @@ def move_ball(ball):
     next_x = 0
     next_y = 0
     if tempball['direction'] == DIRECTION.UP:
-        next_x = tempball['x']
-        next_y = tempball['y']-1
-        next_type = tile_map[next_y][next_x]
+        if ball['type'] == 0:
+            next_x = tempball['x']
+            next_y = tempball['y']-1
+            next_type = tile_map[next_y][next_x]
+        else:
+            next_x = tempball['x']
+            next_y = tempball['y']+1
+            next_type = tile_map[next_y][next_x]
     elif tempball['direction'] == DIRECTION.DOWN:
-        next_x = tempball['x']
-        next_y = tempball['y']+1
-        next_type = tile_map[next_y][next_x]
+        if ball['type'] == 0:
+            next_x = tempball['x']
+            next_y = tempball['y']+1
+            next_type = tile_map[next_y][next_x]
+        else:
+            next_x = tempball['x']
+            next_y = tempball['y']-1
+            next_type = tile_map[next_y][next_x]
     elif tempball['direction'] == DIRECTION.RIGHT:
-        next_x = tempball['x']+1
-        next_y = tempball['y']
-        next_type = tile_map[next_y][next_x]
+        if ball['type'] == 0:
+            next_x = tempball['x']+1
+            next_y = tempball['y']
+            next_type = tile_map[next_y][next_x]
+        else:
+            next_x = tempball['x']-1
+            next_y = tempball['y']
+            next_type = tile_map[next_y][next_x]
     elif tempball['direction'] == DIRECTION.LEFT:
-        next_x = tempball['x']-1
-        next_y = tempball['y']
-        next_type = tile_map[next_y][next_x]
+        if ball['type'] == 0:
+            next_x = tempball['x']-1
+            next_y = tempball['y']
+            next_type = tile_map[next_y][next_x]
+        else:
+            next_x = tempball['x']+1
+            next_y = tempball['y']
+            next_type = tile_map[next_y][next_x]
 
     if next_type == TILETYPE.NORMAL:
         tempball['x'] = next_x
