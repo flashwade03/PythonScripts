@@ -161,9 +161,54 @@ def find_path(mode) :
     else :
         for package in range(start_package_number, end_package_number + 1) :
             for level in range(start_level_number, 21) :
-                current_level = star(package) + "_" + str(level)
-                filePath = fileDir + "/" + current_level + ".txt"
+                current_level = str(package) + "_" + str(level)
+                file_path = file_dir + "/" + current_level + ".txt"
+                print 'Current Level : ' + current_level
+                print '\n'
+                min_move = move_limit
                 paths = []
+                json_data = open(file_path).read()
+                data = json.loads(json_data)
+                map_height = data['cellSizey']
+                map_width = data['cellSizex']
+                tile_map = [[0 for col in range(map_width)] for row in range(map_height)]
+                visited_map = [[0 for col in range(map_width)] for row in range(map_height)]
+                map_data = data['pieces']
+                ball_data = copy.deepcopy(data['balls'])
+
+                for tile in map_data :
+                    tile_map[tile['y']][tile['x']] = tile['type']
+                    if tile['type'] == 2 : 
+                        visited_map[tile['y']][tile['x']] = 1
+
+                for ball in ball_data :
+                    tile_map[ball['y']][ball['x']] = ball['type']
+                    visited_map[ball['y']][ball['x']] = 1
+                    ball['direction'] = DIRECTION.NONE
+                    ball['ignore_magnetic'] = True
+                    ball['is_moved'] = False
+         
+                PB = progress_bar(100)
+                calc_unit()
+                current_UNIT = 0
+                path = []
+                DFS(ball_data, visited_map, path)
+
+                PB.set_progress(100)
+                if len(paths) > 0 :
+                    print '\n'
+                    print 'Minimum Length : ' + str(len(paths[0]))
+                    print 'Answer Path'
+                    i = 1
+                    for p in paths : 
+                        print 'Path ' + str(i) + ' : '
+                        print p
+                        i += 1
+                else :
+                    print "This stage doesn't have any answer!"
+                    print '\n\n'
+
+
 
 def DFS(ball_data, visited_map, path):
     #print 'path : '
