@@ -60,15 +60,15 @@ class MAP:
             if made_mine_count == self.total_mine_count:
                 finish = True
         
-        print 'count mine : '+str(len(self.mine_position))
+        #print 'count mine : '+str(len(self.mine_position))
         for mine in self.mine_position:
             for index in range(0, 8):
                 nextY = mine[0] + self.dy[index]
                 nextX = mine[1] + self.dx[index]
                 if nextY >= 0 and nextY < self.height and nextX >=0 and nextX < self.width and self.internal_map_data[nextY][nextX] != -1:
                     self.internal_map_data[nextY][nextX] += 1
-                    print 'mine : '+str(mine[0])+', '+str(mine[1])
-                    print 'tile : '+str(nextY)+', '+str(nextX)
+         #           print 'mine : '+str(mine[0])+', '+str(mine[1])
+         #           print 'tile : '+str(nextY)+', '+str(nextX)
 
     def check_mine(self, input_y, input_x):
         if self.internal_map_data[input_y][input_x] == -1:
