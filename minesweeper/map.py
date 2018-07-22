@@ -88,6 +88,12 @@ class MAP:
                 zeros = self.bfs.find_positions_with_condition(0, self.internal_map_data, input_y, input_x)
                 for z in zeros:
                     self.display_map_data[z[0]][z[1]] = str(0)
+                    for index in range(0, 8):
+                        nx = z[1] + self.dx[index]
+                        ny = z[0] + self.dy[index]
+                        if nx >= 0 and nx < self.width and ny >=0 and ny < self.height and self.display_map_data[ny][nx] == '*' and self.internal_map_data[ny][nx] != -1 :
+                            self.display_map_data[ny][nx] = str(self.internal_map_data[ny][nx])
+                            self.remain_tiles -= 1
                 self.remain_tiles -= len(zeros)
             else:
                 self.display_map_data[input_y][input_x] = str(self.internal_map_data[input_y][input_x])
