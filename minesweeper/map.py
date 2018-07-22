@@ -35,7 +35,7 @@ class MAP:
             elif self.width == 30:
                 self.total_mine_count = 99
         else:
-            self.mine_count = mc
+            self.total_mine_count = mc
 
         self.remain_tiles = (self.height * self.width) - self.total_mine_count
         self.display_map_data = [['*']*self.width for i in range(self.height)]
@@ -94,9 +94,11 @@ class MAP:
                     for index in range(0, 8):
                         nx = z[1] + self.dx[index]
                         ny = z[0] + self.dy[index]
-                        if nx >= 0 and nx < self.width and ny >=0 and ny < self.height and self.display_map_data[ny][nx] == '*' and self.internal_map_data[ny][nx] != -1 :
+                        if nx >= 0 and nx < self.width and ny >=0 and ny < self.height and self.display_map_data[ny][nx] == '*' and self.internal_map_data[ny][nx] != -1 and self.internal_map_data[ny][nx] != 0:
                             self.display_map_data[ny][nx] = str(self.internal_map_data[ny][nx])
                             self.remain_tiles -= 1
+                            #print 'X : '+str(nx)+', Y : '+str(ny)
+
                 self.remain_tiles -= len(zeros)
             else:
                 self.display_map_data[input_y][input_x] = str(self.internal_map_data[input_y][input_x])
@@ -112,6 +114,9 @@ class MAP:
             return True
         else:
             return False
+
+    def print_remain_tiles(self):
+        return self.remain_tiles
 
     def print_display_map(self):
         for height in range(0, self.height):

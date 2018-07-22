@@ -92,10 +92,11 @@ class GameManager:
         is_winner = False
 
         while not finish:
+            #print 'Remain Tiles : '+str(self.map_instance.print_remain_tiles())
             self.map_instance.print_display_map()
             if self.map_instance.did_find_all_mines():
                 is_winner = True
-                finish = False
+                finish = True 
 
             else:
                 print '\n'
