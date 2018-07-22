@@ -3,8 +3,8 @@ from bfs import BFS
 
 class MAP:
 
-    dx = [-1, 0, 1, -1, 0, 1, -1, 0, 1]
-    dy = [-1, -1, -1, 0, 0, 0, 1, 1, 1]
+    dy = [-1, -1, -1, 0, 0, 1, 1, 1]
+    dx = [-1, 0, 1, -1, 1, -1, 0, 1]
 
     mine_position = None
     display_map_data = None
@@ -60,12 +60,15 @@ class MAP:
             if made_mine_count == self.total_mine_count:
                 finish = True
         
+        print 'count mine : '+str(len(self.mine_position))
         for mine in self.mine_position:
             for index in range(0, 8):
                 nextY = mine[0] + self.dy[index]
                 nextX = mine[1] + self.dx[index]
                 if nextY >= 0 and nextY < self.height and nextX >=0 and nextX < self.width and self.internal_map_data[nextY][nextX] != -1:
                     self.internal_map_data[nextY][nextX] += 1
+                    print 'mine : '+str(mine[0])+', '+str(mine[1])
+                    print 'tile : '+str(nextY)+', '+str(nextX)
 
     def check_mine(self, input_y, input_x):
         if self.internal_map_data[input_y][input_x] == -1:
